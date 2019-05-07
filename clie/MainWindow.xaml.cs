@@ -21,14 +21,14 @@ namespace clie
     /// <summary>
     /// Логика взаимодействия для MainWindow.xaml
     /// </summary>
-    public partial class client : Page
+    public partial class MainWindow : Window
     {
         const int port = 7532;
         const string address = "127.0.0.1";
-        TcpClient cl = null;
+        TcpClient client;
         NetworkStream stream = null;
 
-        public client()
+        public MainWindow()
         {
             InitializeComponent();
         }
@@ -57,14 +57,14 @@ namespace clie
             }
             finally
             {
-                cl.Close();
+                client.Close();
             }
         }
 
         private void con_Click(object sender, RoutedEventArgs e)
         {
-            cl = new TcpClient(address, port);
-            stream = cl.GetStream();
+            client = new TcpClient(address, port);
+            stream = client.GetStream();
 
             Thread clientTread = new Thread(() => listen());
             clientTread.Start();
@@ -80,7 +80,7 @@ namespace clie
 
         private void dis_Click(object sender, RoutedEventArgs e)
         {
-            cl.Close();
+            client.Close();
         }
     }
 }
