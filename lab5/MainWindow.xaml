@@ -9,6 +9,6 @@
     <Grid>
         <Button x:Name="bt1" Content="Запустить сервер" HorizontalAlignment="Left" Height="97" Margin="100,105,0,0" VerticalAlignment="Top" Width="217" Click="bt1_Click"/>
         <Button x:Name="bt2" Content="Остановить сервер" HorizontalAlignment="Left" Height="97" Margin="100,234,0,0" VerticalAlignment="Top" Width="217" Click="bt2_Click"/>
-        <ListBox HorizontalAlignment="Left" Height="241" Margin="446,90,0,0" VerticalAlignment="Top" Width="238"/>
+        <ListBox x:Name="list" HorizontalAlignment="Left" Height="241" Margin="446,90,0,0" VerticalAlignment="Top" Width="238"/>
     </Grid>
 </Window>

@@ -24,7 +24,8 @@ namespace clie
     public partial class client : Page
     {
         const int port = 7532;
-        const string address = "127.0.0.1"; TcpClient client = null;
+        const string address = "127.0.0.1";
+        TcpClient cl = null;
         NetworkStream stream = null;
 
         public client()
@@ -51,37 +52,35 @@ namespace clie
                     while (stream.DataAvailable);
 
                     string message = builder.ToString();
-                    Dispatcher.BeginInvoke(new Action(() => log.Items.Add(message)));
+                    Dispatcher.BeginInvoke(new Action(() => list.Items.Add(message)));
                 }
             }
             finally
             {
-                client.Close();
+                cl.Close();
             }
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void con_Click(object sender, RoutedEventArgs e)
         {
-            client = new TcpClient(address, port);
-            stream = client.GetStream();
+            cl = new TcpClient(address, port);
+            stream = cl.GetStream();
 
             Thread clientTread = new Thread(() => listen());
             clientTread.Start();
         }
 
-        private void Button_Click_1(object sender, RoutedEventArgs e)
+        private void bt_Click(object sender, RoutedEventArgs e)
         {
-            // Console.Write(userName + ": "); 
-            string message = message.Text;
-            // message = String.Format("{0}: {1}", userName, message); 
+            string message = tb.Text;
             byte[] data = Encoding.Unicode.GetBytes(message);
             stream.Write(data, 0, data.Length);
-            log.Items.Add(message);
+            list.Items.Add(message);
         }
 
-        private void Button_Click_2(object sender, RoutedEventArgs e)
+        private void dis_Click(object sender, RoutedEventArgs e)
         {
-            client.Close();
+            cl.Close();
         }
     }
 }

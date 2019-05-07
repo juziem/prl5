@@ -84,7 +84,7 @@ namespace lab5
             {
                 TcpClient client = listener.AcceptTcpClient();
                 Thread clientThread = new Thread(() => Process(client));
-                Dispatcher.BeginInvoke(new Action(() => listBox.Items.Add("Connected")));
+                Dispatcher.BeginInvoke(new Action(() => list.Items.Add("Connected")));
                 clientThread.Start();
             }
         }
