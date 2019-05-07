@@ -25,58 +25,83 @@ namespace lab5
 
     public partial class MainWindow : Window
     {
-        public static void Process(TcpClient tcpClient)
-        {
-            
-            TcpClient client = tcpClient;
-            NetworkStream stream = null;
-            try
-            {
-                stream = client.GetStream();
-                byte[] data = new byte[64];
-                while (true)
-                {
-                    StringBuilder builder = new StringBuilder();
-                    int bytes = 0;
-                    do
-                    {
-                        bytes = stream.Read(data, 0, data.Length);
-                        builder.Append(Encoding.Unicode.GetString(data, 0, bytes));
-                    }
-                    while (stream.DataAvailable);
-
-                    string message = builder.ToString();
-                    Console.WriteLine(message);
-                    data = Encoding.Unicode.GetBytes(message);
-                    stream.Write(data, 0, data.Length);
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-            finally
-            {
-                if (stream != null)
-                    stream.Close();
-                if (client != null)
-                    client.Close();
-            }
-        }
-
-        const int port = 4168;
+        const int port = 7532;
         static TcpListener listener;
 
         public MainWindow()
         {
             InitializeComponent();
+        }
 
-            listener = new TcpListener(IPAddress.Parse("127.0.0.1"), port);            listener.Start();            while (true)
+        public static void Process(TcpClient tcpClient)
+        {
+            TcpClient client = tcpClient;
+            NetworkStream stream = null;
+
+            try
+            {
+                //получение потока для обмена сообщениями 
+                stream = client.GetStream();
+                // буфер для получаемых данных 
+                byte[] data = new byte[64];
+                //цикл обработки сообщений 
+                while (true)
+                {
+                    //объект, для формирования строк 
+                    StringBuilder builder = new StringBuilder();
+                    int bytes = 0;
+                    //до тех пор, пока в потоке есть данные 
+                    do
+                    {
+                        //из потока считываются 64 байта и записываются в data 
+                        bytes = stream.Read(data, 0, data.Length);
+                        //из считанных данных формируется строка 
+                        builder.Append(Encoding.Unicode.GetString(data, 0, bytes));
+                    }
+                    while (stream.DataAvailable);
+                    string message = builder.ToString();//можно добавить ч-н ч/з + 
+                    data = Encoding.Unicode.GetBytes(message);
+                    stream.Write(data, 0, data.Length);
+                }
+            }
+
+            catch (Exception ex)
+            {
+                //MessageBox(ex.Message); 
+            }
+            finally
+            {
+                if (client != null)
+                    client.Close();
+                if (client != null)
+                    client.Close();
+            }
+        }
+
+        public void listen()
+        {
+            while (true)
             {
                 TcpClient client = listener.AcceptTcpClient();
                 Thread clientThread = new Thread(() => Process(client));
-                clientThread.Start();
+                Dispatcher.BeginInvoke(new Action(() => listBox.Items.Add("Connected")));
+                clientThread.Start();
             }
         }
+
+        private void bt1_Click(object sender, RoutedEventArgs e) //подключение ip 
+        {
+            listener = new TcpListener(IPAddress.Parse("127.0.0.1"), port);
+            listener.Start();
+
+            Thread clientTread = new Thread(() => listen());
+            clientTread.Start();
+        }
+
+        private void bt2_Click(object sender, RoutedEventArgs e)
+        {
+            if (listener != null)
+                listener.Stop();
+        }        
     }
 }
