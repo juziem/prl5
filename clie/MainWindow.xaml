@@ -7,8 +7,8 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid Margin="0,0,2,0">
-        <Button x:Name="bt" Content="Добавить" HorizontalAlignment="Left" Margin="120,312,0,0" VerticalAlignment="Top" Width="114" Click="msg_Click" Height="29"/>
-        <ListBox x:Name="list" HorizontalAlignment="Left" Height="228" Margin="398,77,0,0" VerticalAlignment="Top" Width="290"/>
+        <Button x:Name="bt" Content="Добавить" HorizontalAlignment="Left" Margin="120,312,0,0" VerticalAlignment="Top" Width="114" Height="29"/>
+        <ListBox x:Name="list" HorizontalAlignment="Left" Height="228" Margin="454,96,0,0" VerticalAlignment="Top" Width="290"/>
         <TextBox x:Name="tb" HorizontalAlignment="Left" Height="132" Margin="48,158,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="328" Text="Введите строку"/>
         <Button x:Name="con" Content="Подключить" HorizontalAlignment="Left" Height="50" Margin="48,50,0,0" VerticalAlignment="Top" Width="102"/>
         <Button x:Name="dis" Content="Отключить" HorizontalAlignment="Left" Height="50" Margin="190,50,0,0" VerticalAlignment="Top" Width="102"/>

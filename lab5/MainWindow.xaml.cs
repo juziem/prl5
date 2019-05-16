@@ -33,7 +33,15 @@ namespace lab5
             InitializeComponent();
         }
 
-        public static void Process(TcpClient tcpClient)
+        static string Ch(string str)
+        {
+            char[] ch = str.ToCharArray();
+            Array.Reverse(ch);
+            string strRe = new string(ch);
+            return strRe;
+        }
+
+        public void Process(TcpClient tcpClient)
         {
             TcpClient client = tcpClient;
             NetworkStream stream = null;
@@ -57,22 +65,33 @@ namespace lab5
                         bytes = stream.Read(data, 0, data.Length);
                         //из считанных данных формируется строка 
                         builder.Append(Encoding.Unicode.GetString(data, 0, bytes));
+
+
                     }
                     while (stream.DataAvailable);
-                    string message = builder.ToString();//можно добавить ч-н ч/з + 
-                    data = Encoding.Unicode.GetBytes(message);
-                    stream.Write(data, 0, data.Length);
+
+                    if (!builder.ToString().Equals("Клиент отключен"))
+                    {
+                        string message = Ch(builder.ToString());
+                        data = Encoding.Unicode.GetBytes(message);
+                        stream.Write(data, 0, data.Length);
+                    }
+                    else
+                    {
+                        list.Items.Add("Отключен");
+                        break;
+                    }
                 }
             }
 
-            catch (Exception ex)
+            catch 
             {
                 //MessageBox(ex.Message); 
             }
             finally
             {
-                if (client != null)
-                    client.Close();
+                if (stream != null)
+                    stream.Close();
                 if (client != null)
                     client.Close();
             }
@@ -80,28 +99,48 @@ namespace lab5
 
         public void listen()
         {
-            while (true)
+            try
             {
-                TcpClient client = listener.AcceptTcpClient();
-                Thread clientThread = new Thread(() => Process(client));
-                Dispatcher.BeginInvoke(new Action(() => list.Items.Add("Подключено")));
-                clientThread.Start();
+                while (true)
+                {
+                    TcpClient client = listener.AcceptTcpClient();
+                    Thread clientThread = new Thread(() => Process(client));
+                    Dispatcher.BeginInvoke(new Action(() => list.Items.Add("Подключено")));
+                    clientThread.Start();
+                }
             }
+            catch (InvalidOperationException)
+            {
+                MessageBox.Show("Ошибка!");
+            }
+            catch (SocketException)
+            {
+                MessageBox.Show("Ошибка!");
+            }
+
         }
+
 
         private void bt1_Click(object sender, RoutedEventArgs e) //подключение ip 
         {
-            listener = new TcpListener(IPAddress.Parse("127.0.0.1"), port);
-            listener.Start();
-
-            Thread clientTread = new Thread(() => listen());
-            clientTread.Start();
+            try
+            {
+                listener = new TcpListener(IPAddress.Parse("127.0.0.1"), port);
+                listener.Start();
+                Dispatcher.BeginInvoke(new Action(() => list.Items.Add("Сервер включен")));
+                Thread clientTread = new Thread(() => listen());
+                clientTread.Start();
+            }
+            catch (SocketException)
+            {
+                MessageBox.Show("Ошибка!");
+            }
         }
 
         private void bt2_Click(object sender, RoutedEventArgs e)
         {
             if (listener != null)
                 listener.Stop();
-        }        
+        }
     }
 }
